@@ -7,7 +7,7 @@ class DatasetInfo:
     def __init__(self, dataset_info):
         self._dataset_info = dataset_info
         self.dataset_name = self._dataset_info['dataset_name']
-        self.paper_info = self._dataset_info['paper_info']
+        # self.paper_info = self._dataset_info['paper_info']
         self.keypoint_info = self._dataset_info['keypoint_info']
         self.skeleton_info = self._dataset_info['skeleton_info']
         self.joint_weights = np.array(

@@ -26,8 +26,9 @@ from .top_down import (TopDownAicDataset, TopDownCocoDataset,
                        TopDownMpiiDataset, TopDownMpiiTrbDataset,
                        TopDownOCHumanDataset, TopDownPoseTrack18Dataset,
                        TopDownPoseTrack18VideoDataset)
-
+from .swimmer import TopDownSwimmerDataset
 __all__ = [
+    'TopDownSwimmerDataset',
     'TopDownCocoDataset', 'BottomUpCocoDataset', 'BottomUpMhpDataset',
     'BottomUpAicDataset', 'BottomUpCocoWholeBodyDataset', 'TopDownMpiiDataset',
     'TopDownMpiiTrbDataset', 'OneHand10KDataset', 'PanopticDataset',

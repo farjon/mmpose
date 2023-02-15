@@ -2,7 +2,7 @@ _base_ = [
     '../configs/_base_/default_runtime.py',
     '../configs/_base_/datasets/swimmer.py'
 ]
-evaluation = dict(interval=10, metric='mAP', save_best='AP')
+evaluation = dict(interval=5, metric='mAP', save_best='AP')
 
 optimizer = dict(
     type='Adam',
@@ -26,7 +26,13 @@ channel_cfg = dict(
     inference_channel=[
         0, 1, 2, 3, 4, 5, 6
     ])
-
+log_config = dict(
+    interval=50,
+    hooks=[
+        dict(type='TextLoggerHook'),
+        dict(type='TensorboardLoggerHook'),
+        dict(type='ClearMLLoggerHook')
+    ])
 # model settings
 model = dict(
     type='TopDown',

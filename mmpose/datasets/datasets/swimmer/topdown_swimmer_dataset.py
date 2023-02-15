@@ -9,6 +9,10 @@ import numpy as np
 from mmcv import Config, deprecated_api_warning
 from xtcocotools.cocoeval import COCOeval
 
+from mmpose.core.evaluation.top_down_eval import (keypoint_auc, keypoint_epe,
+                                                  keypoint_nme,
+                                                  keypoint_pck_accuracy)
+
 from ....core.post_processing import oks_nms, soft_oks_nms
 from ...builder import DATASETS
 from ..base import Kpt2dSviewRgbImgTopDownDataset
@@ -310,6 +314,7 @@ class TopDownSwimmerDataset(Kpt2dSviewRgbImgTopDownDataset):
         # do evaluation only if the ground truth keypoint annotations exist
         if 'annotations' in self.coco.dataset:
             info_str = self._do_python_keypoint_eval(res_file)
+            info_str = self._report_metric(valid_kpts, ['PCK', 'AUC', 'EPE', 'NME'], info_str=info_str)
             name_value = OrderedDict(info_str)
 
             if tmp_folder is not None:
@@ -366,6 +371,72 @@ class TopDownSwimmerDataset(Kpt2dSviewRgbImgTopDownDataset):
             cat_results.extend(result)
 
         return cat_results
+
+    def _report_metric(self,
+                       kpts,
+                       metrics,
+                       pck_thr=0.2,
+                       pckh_thr=0.7,
+                       auc_nor=30,
+                       info_str=[]):
+        """Keypoint evaluation.
+
+        Args:
+            res_file (str): Json file stored prediction results.
+            metrics (str | list[str]): Metric to be performed.
+                Options: 'PCK', 'PCKh', 'AUC', 'EPE', 'NME'.
+            pck_thr (float): PCK threshold, default as 0.2.
+            pckh_thr (float): PCKh threshold, default as 0.7.
+            auc_nor (float): AUC normalization factor, default as 30 pixel.
+
+        Returns:
+            List: Evaluation results for evaluation metric.
+        """
+        preds = kpts
+
+        assert len(preds) == len(self.db)
+
+        outputs = []
+        gts = []
+        masks = []
+        box_sizes = []
+        threshold_bbox = []
+
+        for pred, item in zip(preds, self.db):
+            outputs.append(np.array(pred[0]['keypoints'])[:, :-1])
+            gts.append(np.array(item['joints_3d'])[:, :-1])
+            masks.append((np.array(item['joints_3d_visible'])[:, 0]) > 0)
+            if 'PCK' in metrics:
+                bbox = np.array(item['bbox'])
+                bbox_thr = np.max(bbox[2:])
+                threshold_bbox.append(np.array([bbox_thr, bbox_thr]))
+            box_sizes.append(item.get('box_size', 1))
+
+        outputs = np.array(outputs)
+        gts = np.array(gts)
+        masks = np.array(masks)
+        threshold_bbox = np.array(threshold_bbox)
+        box_sizes = np.array(box_sizes).reshape([-1, 1])
+
+        if 'PCK' in metrics:
+            _, pck, _ = keypoint_pck_accuracy(outputs, gts, masks, pck_thr,
+                                              threshold_bbox)
+            info_str.append(('PCK', pck))
+
+        if 'AUC' in metrics:
+            info_str.append(('AUC', keypoint_auc(outputs, gts, masks,
+                                                 auc_nor)))
+
+        if 'EPE' in metrics:
+            info_str.append(('EPE', keypoint_epe(outputs, gts, masks)))
+
+        if 'NME' in metrics:
+            normalize_factor = self._get_normalize_factor(
+                gts=gts, box_sizes=box_sizes)
+            info_str.append(
+                ('NME', keypoint_nme(outputs, gts, masks, normalize_factor)))
+
+        return info_str
 
     def _do_python_keypoint_eval(self, res_file):
         """Keypoint evaluation using COCOAPI."""
