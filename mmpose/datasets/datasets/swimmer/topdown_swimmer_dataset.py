@@ -33,7 +33,14 @@ class TopDownSwimmerDataset(Kpt2dSviewRgbImgTopDownDataset):
         3: 'LWrist',
         4: 'RShoulder',
         5: 'RElbow',
-        6: 'RWrist'
+        6: 'RWrist',
+        7: 'LHip',
+        8: 'LKnee',
+        9: 'LAnkle',
+        10: 'RHip',
+        11: 'RKnee',
+        12: 'RAnkle'
+
 
     Args:
         ann_file (str): Path to the annotation file.

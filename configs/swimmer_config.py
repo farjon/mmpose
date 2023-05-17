@@ -18,20 +18,20 @@ lr_config = dict(
     step=[170, 200])
 total_epochs = 210
 channel_cfg = dict(
-    num_output_channels=7,
-    dataset_joints=7,
+    num_output_channels=13,
+    dataset_joints=13,
     dataset_channel=[
-        [0, 1, 2, 3, 4, 5, 6],
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     ],
     inference_channel=[
-        0, 1, 2, 3, 4, 5, 6
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
     ])
 log_config = dict(
     interval=50,
     hooks=[
         dict(type='TextLoggerHook'),
         dict(type='TensorboardLoggerHook'),
-        dict(type='ClearMLLoggerHook')
+        # dict(type='ClearMLLoggerHook')
     ])
 # model settings
 model = dict(
@@ -144,13 +144,13 @@ val_pipeline = [
 ]
 
 test_pipeline = val_pipeline
-
-data_root = 'C:/Users/owner/PycharmProjects/Swimmer_keyypoint_thesis/Data'
+data_root = 'C:/Users/mayha/Documents/Swimmer_keyypoint_thesis/DATA'
+# data_root = 'C:/Users/owner/PycharmProjects/Swimmer_keyypoint_thesis/Data'
 data = dict(
-    samples_per_gpu=64,
-    workers_per_gpu=2,
-    val_dataloader=dict(samples_per_gpu=32),
-    test_dataloader=dict(samples_per_gpu=32),
+    samples_per_gpu=8,
+    workers_per_gpu=1,
+    val_dataloader=dict(samples_per_gpu=8),
+    test_dataloader=dict(samples_per_gpu=8),
     train=dict(
         type='TopDownSwimmerDataset',
         ann_file=f'{data_root}/train/instances_train.json',

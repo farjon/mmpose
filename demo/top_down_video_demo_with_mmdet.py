@@ -21,7 +21,7 @@ except (ImportError, ModuleNotFoundError):
 def main():
     """Visualize the demo video (support both single-frame and multi-frame).
 
-    Using mmdet to detect the human.
+    Using mmdet to detect the human.c
     """
     parser = ArgumentParser()
     parser.add_argument('det_config', help='Config file for detection')
