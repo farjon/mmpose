@@ -24,7 +24,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Train a pose model')
     parser.add_argument('--config', default='../configs/swimmer_config.py' ,help='train config file path')
     parser.add_argument('--work-dir', default='../../TRAINED_MODELS/mmpose/', help='the dir to save logs and models')
-    parser.add_argument('-e', '--exp-number', type=int, default=1, help='experiment number')
+    parser.add_argument('-e', '--exp-number', type=int, default=100, help='experiment number')
     parser.add_argument(
         '--resume-from', help='the checkpoint file to resume from')
     parser.add_argument(

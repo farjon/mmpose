@@ -26,8 +26,8 @@ except ImportError:
 
 def parse_args():
     parser = argparse.ArgumentParser(description='mmpose test model')
-    parser.add_argument('config', default='../configs/swimmer_config.py',  help='test config file path')
-    parser.add_argument('checkpoint', default= '../tools/work_dirs/swimmer_config/best_AP_epoch_80.pth', help='checkpoint file')
+    parser.add_argument('--config', default='../configs/swimmer_config.py',  help='test config file path')
+    parser.add_argument('--checkpoint', default= '../tools/work_dirs/swimmer_config/best_AP_epoch_80.pth', help='checkpoint file')
     parser.add_argument('--out', help='output result file')
     parser.add_argument(
         '--work-dir', help='the dir to save evaluation results')
